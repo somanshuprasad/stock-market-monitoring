@@ -3,7 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-class TechnicalAnalysis():
+class QueryIndicators():
     
     def __init__(self):
         self._get_ticker_list()
@@ -58,8 +58,9 @@ class TechnicalAnalysis():
                             self.technicals["ma"][ticker] = df    
 
 
+
 if __name__ == "__main__":
-    t = TechnicalAnalysis()
+    t = QueryIndicators()
 
     t.get_data()
 
