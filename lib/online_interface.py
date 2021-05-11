@@ -20,7 +20,7 @@ class QueryIndicators():
         base_url = f"https://in.investing.com/{asset}/"
         response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head)
 
-        return response, datetime.now()
+        return response
 
     def get_data(self,*args,**kwargs):
         if len(args) == 0: args = ("price","pivot","ma") # if no arguments are specified, default to all
@@ -34,7 +34,7 @@ class QueryIndicators():
         for asset,ticker_list in self.ticker_json.items():
             #looping through each ticker per asset class 
             for ticker in ticker_list:
-                response,req_time = self._request(ticker,asset,time_frame=time_frame)
+                response = self._request(ticker,asset,time_frame=time_frame)
                 soup = BeautifulSoup(response.text, "html5lib")
                 
                 # Add to error_tickers incase of issues
