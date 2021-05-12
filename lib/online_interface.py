@@ -55,7 +55,8 @@ class QueryIndicators():
                 if "ma" in args:
                     for df in pd.read_html(response.text):
                         if "Period" in df.columns and "Exponential" in df.columns:
-                            self.technicals["ma"][ticker] = df    
+                            s = df.set_index("Period")["Simple"].str.split(" ",expand=True)[0].copy()
+                            self.technicals["ma"][ticker] = s.fillna(0).astype(float)
 
 class DbInterface():
     def init(self):
