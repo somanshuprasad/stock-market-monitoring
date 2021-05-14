@@ -3,6 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 import sqlite3 as sl
+import sys
 
 class QueryIndicators():
     
@@ -12,13 +13,19 @@ class QueryIndicators():
     def _get_ticker_list(self):
         self.ticker_json = {}
         
-        self.ticker_json["equities"] = list(pd.read_csv("equity_tickers.csv")["equities"])
-        self.ticker_json["indices"] = list(pd.read_csv("indices_tickers.csv")["indices"])
+        self.ticker_json["equities"] = list(pd.read_csv("equity_tickers.csv")["url_name"])
+        self.ticker_json["indices"] = list(pd.read_csv("indices_tickers.csv")["url_name"])
+        self.ticker_json["currencies"] = list(pd.read_csv("currency_tickers.csv")["url_name"])
 
     def _request(self,ticker,asset,time_frame=3600):
         head = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"}
         base_url = f"https://in.investing.com/{asset}/"
-        response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head)
+        try:
+            response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head)
+        except KeyboardInterrupt:
+            sys.exit()
+        except:
+            response = False
 
         return response
 
@@ -35,12 +42,15 @@ class QueryIndicators():
             #looping through each ticker per asset class 
             for ticker in ticker_list:
                 response = self._request(ticker,asset,time_frame=time_frame)
-                soup = BeautifulSoup(response.text, "html5lib")
                 
                 # Add to error_tickers incase of issues
-                if response.status_code != 200:
+                if response:
+                    pass
+                else:
                     self.error_tickers.append(ticker)
                     break
+
+                soup = BeautifulSoup(response.text, "html5lib")
 
                 if "price" in args:
                     self.prices[ticker] = float(soup.find("bdo", {"class": "last-price-value js-streamable-element"}).text.replace(",",""))
