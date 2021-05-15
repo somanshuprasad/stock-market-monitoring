@@ -1,7 +1,6 @@
-Untitled.ipynb
-.ipynb_checkpoints/Untitled-checkpoint.ipynb
-.ipynb_checkpoints/index_list-checkpoint.txt
+"env" 
 __pycache__
-*.db-journal
-test frontend.xlsx
-zFront End Test.xlsm
+.ipynb_checkpoints
+*.xlsm
+*.xlsx
+*.ipynb
