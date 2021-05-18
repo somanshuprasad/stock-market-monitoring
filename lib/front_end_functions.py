@@ -11,7 +11,7 @@ class Sql:
         self.cursor = self.conn.cursor()
 
     def _safe_sql_call(self,query):
-        # Receives a sql query, tries to call teh db. if the query fails, tries again after 1 second else returns
+        # Receives a sql query, tries to call the db. if the query fails, tries again after 1 second else returns. Will retry 10 times
         self.conn = sl.connect('backend_database.db')
         for _ in range(10):
             try:
@@ -22,6 +22,7 @@ class Sql:
             if io_error:
                 time.sleep(1)
             else: 
+                self.conn.close()
                 return df
 
     def query_price_df(self):
@@ -96,6 +97,7 @@ class CreatePlot():
         self.price_df = self.sql.query_all_prices_tday_df()
         self.pivot_df = self.sql.query_pivot_df()
         pivot_list = ["R3","R2","R1","Pivot Points","S1","S2","S3"]
+        # template = {"layout":{"title":ticker}}
 
         if ticker is None: ticker = self.price_df.columns[1]
         df = self.price_df[["time",ticker]].copy()
@@ -109,4 +111,5 @@ class CreatePlot():
                                     y=df[col],
                                     name=col,
                                     line={"width":2, "dash":'dash'}))
+        fig.update_layout(title=ticker,title_x=0.5,uirevision=True)
         return fig

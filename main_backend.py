@@ -15,6 +15,7 @@ def get_price_data():
 
 if __name__ == "__main__":
     # create web and sql interface objects
+    print("started running backend")
     sql = Sql()
     t = QueryIndicators()
 
@@ -35,3 +36,5 @@ if __name__ == "__main__":
         if len(t.error_tickers) > 0: print(f"following tickers had errors: {t.error_tickers}")
 
         if is_technical_run: start = time.perf_counter()
+
+        
