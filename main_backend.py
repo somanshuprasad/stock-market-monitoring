@@ -26,7 +26,7 @@ if __name__ == "__main__":
     while True:
         is_technical_run = False
 
-        if time.perf_counter() - start >= 3600:
+        if time.perf_counter() - start >= 10 * 60: # Run the technicals every 10 mins
             get_all_data()
             is_technical_run = True
             print(f"{datetime.datetime.now()}: techincals just ran. sample {t.technicals['ma']['reliance-industries']}")
