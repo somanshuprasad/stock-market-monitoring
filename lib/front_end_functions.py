@@ -69,7 +69,7 @@ class CreateDf():
         combined["tech_inbetween_perc"] = combined.apply(lambda row: ((row["Price"]-row["tech_inbetween_num"][0])/(np.diff(row["tech_inbetween_num"])[0]+0.000001), (row["tech_inbetween_num"][1]-row["Price"])/(np.diff(row["tech_inbetween_num"])[0]+0.000001)),axis=1)
         combined["tech_inbetween_perc"] = combined["tech_inbetween_perc"].apply(lambda row: (f"{round(row[0]*100)}%", f"{round(row[1]*100)}%"))
 
-        return combined[["Ticker","Price","tech_inbetween_lbl","tech_inbetween_num","tech_inbetween_perc"]].astype(str)
+        return combined[["Ticker","Price","Pivot Points","tech_inbetween_lbl","tech_inbetween_num","tech_inbetween_perc"]].astype(str)
 
     def mov_avg(self):
         self.sql = Sql()
@@ -79,9 +79,10 @@ class CreateDf():
         combined = pd.merge(self.price_df,self.ma_df,left_on="Ticker",right_index=True,how="outer")
 
         for col in [col for col in combined.columns if "MA" in col]:
-            combined[f"{col} %"] = round(combined[col]/combined["Price"]*100, 2) # Calculate percentage difference between Moving average and Price
+            combined[f"{col} %"] = round(((combined["Price"]/combined[col])-1)*100, 2) # Calculate percentage difference between Moving average and Price
 
-        return combined[[col for col in combined.columns if "%" in col or col in ["Ticker","Price"]] ]
+        # return combined[[col for col in combined.columns if "%" in col or col in ["Ticker","Price"]] ]
+        return combined
     
     def all_prices_tday(self):
         # Queries the entire price list from SQL
