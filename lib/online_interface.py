@@ -15,7 +15,7 @@ class QueryIndicators():
         
         # setting up a sessions object with headers and retries
         self.s = Session()
-        self.s.mount('https://', HTTPAdapter(max_retries=Retry(total=5,backoff_factor=1)))
+        self.s.mount('https://', HTTPAdapter(max_retries=Retry(total=5,backoff_factor=1),pool_maxsize=100))
         self.s.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"})
     
     def _get_ticker_list(self):
