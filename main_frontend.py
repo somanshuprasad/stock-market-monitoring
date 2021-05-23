@@ -50,7 +50,7 @@ ma_dash_datatable = dash_table.DataTable(style_data={'whiteSpace': 'normal','hei
 #=================================================== Defining the HTML Elements ===================================================
 # Creating the HTML elements
 div_pivot_table = html.Div([pivot_dash_datatable],style={'width': '50%', 'display': 'inline-block'})
-div_ma_table = html.Div([ma_dash_datatable],style={'width': '40%', 'display': 'inline-block'})
+div_ma_table = html.Div([ma_dash_datatable],style={'width': '55%', 'display': 'inline-block'})
 h1_heading = html.H1("Investing.com Technicals Tracker",style={"text-align": "center"})
 
 # Chart Tab
