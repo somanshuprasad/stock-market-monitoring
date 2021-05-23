@@ -1,7 +1,10 @@
 import requests
+from requests.packages.urllib3.util import Retry
+from requests.adapters import HTTPAdapter
+from requests import Session
+
 import pandas as pd
 from bs4 import BeautifulSoup
-from datetime import datetime
 import sqlite3 as sl
 import sys
 
@@ -9,6 +12,11 @@ class QueryIndicators():
     
     def __init__(self):
         self._get_ticker_list()
+        
+        # setting up a sessions object with headers and retries
+        self.s = Session()
+        self.s.mount('https://', HTTPAdapter(max_retries=Retry(total=5,backoff_factor=1)))
+        self.s.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"})
     
     def _get_ticker_list(self):
         self.ticker_json = {}
@@ -18,11 +26,11 @@ class QueryIndicators():
         self.ticker_json["currencies"] = list(pd.read_csv("currency_tickers.csv")["url_name"])
 
     def _request(self,ticker,asset,time_frame=3600):
-        head = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"}
         base_url = f"https://in.investing.com/{asset}/"
+        
         try:
-            response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head,timeout=5)
-        except KeyboardInterrupt:
+            response = self.s.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",timeout=5)
+        except KeyboardInterrupt: # incase I want to stop program in between a requests run
             sys.exit()
         except:
             response = False
