@@ -21,7 +21,7 @@ class QueryIndicators():
         head = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36"}
         base_url = f"https://in.investing.com/{asset}/"
         try:
-            response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head)
+            response = requests.get(f"{base_url}{ticker}-technical?timeFrame={time_frame}",headers=head,timeout=5)
         except KeyboardInterrupt:
             sys.exit()
         except:
@@ -48,7 +48,7 @@ class QueryIndicators():
                     pass
                 else:
                     self.error_tickers.append(ticker)
-                    break
+                    continue
 
                 soup = BeautifulSoup(response.text, "html5lib")
 
